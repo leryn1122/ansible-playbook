@@ -1,0 +1,3 @@
+---
+- name: Add automation user details
+  ansible.builtin.include_tasks: automation.yaml

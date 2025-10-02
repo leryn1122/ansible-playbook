@@ -1,0 +1,29 @@
+---
+- name: Add wheel group
+  group:
+    name: wheel
+    state: present
+
+- name: Add wheel group sudoer
+  lineinfile:
+    path: /etc/sudoers
+    regexp: '^\s*%wheel\s'
+    state: present
+    insertafter: EOF
+    line: "%wheel    ALL=(ALL)    NOPASSWD: ALL"
+    validate: /usr/sbin/visudo -cf %s
+
+- name: Add automation user
+  user:
+    name: automation
+    groups: wheel
+    append: yes
+    state: present
+    password: "{{ automation_pass | password_hash('sha512') }}"
+    update_password: always
+
+- name: Upload automation public-key
+  authorized_key:
+    user: automation
+    state: present
+    key: "{{ lookup('file','files/.ssh/automation.pub') }}"
