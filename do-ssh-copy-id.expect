@@ -1,0 +1,14 @@
+#!/usr/bin/expect -d
+
+set address  [lindex $argv 0]
+set username [lindex $argv 1]
+set password [lindex $argv 2]
+
+set timeout 60
+
+spawn ssh-copy-id $username@$address
+expect {
+  "*yes/no" { send "yes\r"; exp_continue }
+  "*password: " { send "$password\r" }
+}
+expect eof

@@ -1,11 +1,11 @@
 ---
 - name: Add wheel group
-  group:
+  ansible.builtin.group:
     name: wheel
     state: present
 
 - name: Add wheel group sudoer
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/sudoers
     regexp: '^\s*%wheel\s'
     state: present
@@ -14,7 +14,7 @@
     validate: /usr/sbin/visudo -cf %s
 
 - name: Add automation user
-  user:
+  ansible.builtin.user:
     name: automation
     groups: wheel
     append: yes
@@ -23,7 +23,8 @@
     update_password: always
 
 - name: Upload automation public-key
-  authorized_key:
+  ansible.builtin.authorized_key:
     user: automation
     state: present
-    key: "{{ lookup('file','files/.ssh/automation.pub') }}"
+    # Fix: https://ansible.readthedocs.io/projects/lint/rules/jinja/
+    key: "{{ lookup('file', 'files/.ssh/automation.pub') }}"
