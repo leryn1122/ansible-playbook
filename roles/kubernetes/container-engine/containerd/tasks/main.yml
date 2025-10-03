@@ -3,15 +3,22 @@
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
-    mode: "0755"
+    owner: root
+    group: root
+    mode: '0755'
     recurse: true
   with_items:
     - /etc/containerd
 
 - name: Containerd | Copy containerd executable
-  ansible.builtin.copy:
+  ansible.builtin.unarchive:
     src: 'tar/{{ item }}'
-    dest: /usr/local/ # Containerd tarfile containes path `bin`
+    dest: /usr/local/bin
+    mode: '0755'
+    remote_src: true
+    # Containerd tarfile containes path `bin`
+    extra_opts:
+      - --strip-components=1
   with_items:
     - containerd-2.1.4-linux-amd64.tar.gz
 
