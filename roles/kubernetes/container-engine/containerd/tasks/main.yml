@@ -42,7 +42,8 @@
   ansible.builtin.copy:
     src: service/containerd.service
     dest: /etc/systemd/system
-
+    mode: '0600'
+  
 - name: Containerd | Restart containerd systemd service
   ansible.builtin.service:
     name: containerd
