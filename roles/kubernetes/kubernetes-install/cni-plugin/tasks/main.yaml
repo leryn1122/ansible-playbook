@@ -1,0 +1,19 @@
+---
+- name: CNI Plugin | Create CNI plugin directory
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: directory
+    mode: '0755'
+    recurse: true
+  with_items:
+    - /var/lib/cni
+    - /etc/cni/net.d
+    - /opt/cni/bin
+
+- name: CNI Plugin | Untar CNI plugin executables
+  ansible.builtin.unarchive:
+    src: "kubernetes/tar/{{ item }}"
+    dest: /opt/cni/bin
+    mode: '0744'
+  with_items:
+    - cni-plugin-linux-amd64-v1.8.0.tgz
