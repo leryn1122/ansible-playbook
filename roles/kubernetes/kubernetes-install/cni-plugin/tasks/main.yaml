@@ -12,8 +12,8 @@
 
 - name: CNI Plugin | Untar CNI plugin executables
   ansible.builtin.unarchive:
-    src: "kubernetes/tar/{{ item }}"
+    src: "tar/{{ item }}"
     dest: /opt/cni/bin
     mode: '0744'
   with_items:
-    - cni-plugin-linux-amd64-v1.8.0.tgz
+    - cni-plugins-linux-amd64-v1.8.0.tgz
