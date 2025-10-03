@@ -1,4 +1,0 @@
-- block:
-    - name: Test Connection
-      ping:
-      run_once: true
