@@ -1,6 +1,10 @@
 ---
-# - name: Kubelet | Ensure system options configured
-#   ansible.builtin.include_tasks: system-configure.yaml
-
 - name: Kubelet | Install kubeadm, kubectl, kubelet
   ansible.builtin.include_tasks: kubelet-install.yaml
+  tags:
+    - kubelet
+
+- name: Crictl | Install crictl tools
+  ansible.builtin.include_tasks: crictl.yaml
+  tags:
+    - crictl
