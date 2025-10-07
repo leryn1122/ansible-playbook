@@ -1,0 +1,53 @@
+---
+- name: Bootstrap | Ensure swap entry commented in /etc/fstab
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    regexp: "^.*swap.*$"
+    state: absent
+    backrefs: yes
+  become: true
+
+- name: Boostrap | Disable swap
+  ansible.builtin.command: >-
+    swapoff -a
+  become: true
+
+- name: Boostrap | Copy security limits /etc/security/limits.conf
+  ansible.builtin.copy:
+    src: etc/security/limits.conf
+    dest: /etc/security/limits.conf
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  become: true
+
+- name: Boostrap | Load kerneml modules
+  ansible.builtin.command: >-
+    modprobe -- {{ item }}
+  become: true
+  with_items:
+    - "{{ sys_kernel_modprobes }}"
+
+- name: Bootstrap | Copy modprobe file
+  ansible.builtin.copy:
+    src: etc/modules-load.d/
+    dest: /etc/modules-load.d/
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+
+- name: Boostrap | Set sysctl
+  ansible.builtin.copy:
+    src: etc/sysctl.d/
+    dest: /etc/sysctl.d/
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+
+- name: Boostrap | Reload sysctl config
+  ansible.builtin.command: >-
+    sysctl --system
+  become: true

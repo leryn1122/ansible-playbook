@@ -1,0 +1,52 @@
+---
+# Some Debian based distros ship without Python3 installed
+
+- name: Bootstrap | Check if bootstrap is needed
+  ansible.builtin.raw: which python3
+  register: need_bootstrap
+  failed_when: false
+  changed_when: false
+  check_mode: false
+  tags:
+    - facts
+
+- name: Bootstrap | Copy apt source conf
+  ansible.builtin.copy:
+    src: etc/apt/sources.list
+    dest: /etc/apt/sources.list
+    owner: root
+    group: root
+    mode: '0600'
+    backup: true
+  become: true
+
+- name: Boostrap | Disable apt auto upgrade
+  ansible.builtin.copy:
+    src: etc/apt/apt.conf.d/
+    dest: /etc/apt/apt.conf.d/
+    owner: root
+    group: root
+    mode: '0600'
+  become: true
+
+- name: Bootstrap | Install Python3
+  ansible.builtin.apt:
+    name:
+      - python3-minimal
+    state: present
+    upgrade: true
+  become: true
+  when:
+    - need_bootstrap.rc != 0
+
+- name: Bootstrap | Set the ansible_python_interpreter fact
+  ansible.builtin.set_fact:
+    ansible_python_interpreter: "/usr/bin/python3"
+
+# Workaround for https://github.com/ansible/ansible/issues/25543
+- name: Bootstrap | Install dbus for hostname module
+  ansible.builtin.apt:
+    name:
+      - dbus
+    state: present
+  become: true

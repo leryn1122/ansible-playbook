@@ -1,0 +1,51 @@
+---
+- name: NTP | Disable systemd-timesyncd
+  ansible.builtin.service:
+    name: systemd-timesyncd.service
+    enabled: false
+    state: stopped
+  failed_when: false
+
+- name: NTP | Set NTP facts
+  ansible.builtin.set_fact:
+    # noinspection jinja[spacing]
+    ntp_service_name: >-
+      {% if ntp_package == "chrony" -%}
+      chronyd
+      {%- elif ansible_os_family in ["RedHat", "Suse"] -%}
+      ntpd
+      {%- else -%}
+      ntp
+      {%- endif %}
+
+- name: NTP | Stop NTP daeomon For Sync Immediately
+  ansible.builtin.service:
+    name: "{{ ntp_service_name }}"
+    state: stopped
+  when:
+    - ntp_force_sync_immediately
+
+- name: NTP | Immediate NTP synchronization
+  # noinspection jinja[spacing]
+  ansible.builtin.command: >-
+    timeout -k 60s 60s
+    {% if ntp_package == "chrony" -%}
+    chronyd -q
+    {%- else -%}
+    ntpd -gq
+    {%- endif -%}
+  when:
+    - ntp_force_sync_immediately
+
+- name: NTP | Starte NTP service
+  service:
+    name: "{{ ntp_service_name }}"
+    state: started
+    enabled: true
+
+- name: NTP | Set timezone
+  community.general.timezone:
+    name: "{{ ntp_timezone }}"
+  when:
+    - ntp_enabled
+    - ntp_timezone != ""

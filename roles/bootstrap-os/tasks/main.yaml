@@ -1,0 +1,46 @@
+---
+- name: Bootstrap | Fetch /etc/os-release
+  ansible.builtin.raw: cat /etc/os-release
+  register: os_release
+  changed_when: false
+  check_mode: false
+
+# - name: Bootstrap CentOS
+#   ansible.builtin.include_tasks: bootstrap-centos.yaml
+# #  when:
+# #    - "'ID=\"centos\"' in os_release.stdout_lines"
+#   when:
+#     - ansible_distribution in [ 'CentOS' ]
+
+- name: Bootstrap | Bootstrap Debian (Debian Family)
+  ansible.builtin.include_tasks: bootstrap-debian.yaml
+#  when:
+#    - "'ID=debian' in os_release.stdout_lines or 'ID=ubuntu' in os_release.stdout_lines"
+  when:
+    - ansible_distribution in [ 'Debian', 'Ubuntu' ]
+
+# - name: Bootstrap Fedora
+#   ansible.builtin.include_tasks: bootstrap-fedora.yaml
+#   when:
+#     - "'ID=fedora' in os_release.stdout_lines"
+#     - "'VARIANT_ID=coreos' in os_release.stdout_lines"
+#   when:
+#     - ansible_distribution in [ 'Fedora' ]
+
+# - name: Bootstrap OpenSUSE
+#   ansible.builtin.include_tasks: bootstrap-opensuse.yaml
+#  when:
+#    - "'ID=\"opensuse-leap\"' in os_release.stdout_lines or 'ID=ubuntu' in os_release.stdout_lines"
+#  when:
+#    - ansible_distribution in [ 'SUSE' ]
+
+- name: Bootstrap | Set hostname
+  ansible.builtin.include_tasks: ./hostname.yaml
+
+- name: Bootstrap | Set kernel tuning
+  ansible.builtin.include_tasks: ./sys_kernel_tuning.yaml 
+
+- name: Bootstrap | Set NTP service
+  ansible.builtin.include_tasks: ./ntp.yaml
+  when:
+    - ntp_enabled

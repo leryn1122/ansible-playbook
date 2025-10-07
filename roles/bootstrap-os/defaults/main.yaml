@@ -1,0 +1,12 @@
+sys_kernel_modprobes:
+  - ip_vs
+  - ip_vs_rr
+  - ip_vs_wrr
+  - ip_vs_sh
+  - nf_conntrack
+  - br_netfilter
+
+ntp_enabled: true
+ntp_package: ntp
+ntp_timezone: Asia/Shanghai
+ntp_force_sync_immediately: true

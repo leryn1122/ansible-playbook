@@ -1,0 +1,16 @@
+---
+- name: Hostname | Set hostname
+  ansible.builtin.hostname:
+    # Given by inventory
+    name: "{{ hostname }}"
+
+- name: Hostname | Set hostname in /etc/hosts
+  ansible.builtin.lineinfile:
+    path: /etc/hostname
+    line: "{{ hostname }}"
+
+- name: Hostname | Set hostname in /etc/hosts
+  ansible.builtin.replace:
+    path: /etc/hosts
+    regexp: '^(127\.0\.0\.1).*'
+    replace: '\1 {{ hostname }}'
