@@ -1,6 +1,6 @@
 ---
 - name: Kubelet | Install kubeadm, kubectl, kubelet
-  ansible.builtin.include_tasks: kubelet-install.yaml
+  ansible.builtin.include_tasks: kubelet.yaml
   tags:
     - kubelet
 

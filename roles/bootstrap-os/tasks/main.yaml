@@ -1,6 +1,6 @@
 ---
 - name: Bootstrap | Fetch /etc/os-release
-  ansible.builtin.raw: cat /etc/os-release
+  raw: cat /etc/os-release
   register: os_release
   changed_when: false
   check_mode: false

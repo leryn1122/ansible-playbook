@@ -1,14 +1,13 @@
 ---
 - name: Crictl | Install crictl
-  ansible.builtin.copy:
+  ansible.builtin.unarchive:
     src: "tar/{{ item }}"
     dest: /usr/local/bin
   with_items:
-    - ""
+    - crictl-v1.34.0-linux-amd64.tar.gz
 
 - name: Crictl | Copy crictl.yaml
-  ansible.builtin.unarchive:
+  ansible.builtin.copy:
     src: etc/crictl.yaml
     dest: /etc/crictl.yaml
     mode: '0644'
-
