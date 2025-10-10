@@ -15,5 +15,8 @@
     src: "tar/{{ item }}"
     dest: /opt/cni/bin
     mode: '0744'
+    exclude:
+      - LICENSE
+      - README.md
   with_items:
     - cni-plugins-linux-amd64-v1.8.0.tgz
