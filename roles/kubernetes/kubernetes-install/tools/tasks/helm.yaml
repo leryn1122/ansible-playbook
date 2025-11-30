@@ -1,0 +1,11 @@
+---
+- name: Helm | Install helm
+  ansible.builtin.copy:
+    src: "tar/{{ item }}"
+    dest: /usr/local/bin
+  with_items:
+
+- name: Helm | Install helm cm-plugin
+  # ansible.builtin.copy:
+  #   src:
+  #   dest: /usr/local/bin

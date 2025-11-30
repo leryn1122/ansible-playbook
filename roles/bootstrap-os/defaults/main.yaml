@@ -7,6 +7,6 @@ sys_kernel_modprobes:
   - br_netfilter
 
 ntp_enabled: true
-ntp_package: ntp
+ntp_package: chrony
 ntp_timezone: Asia/Shanghai
 ntp_force_sync_immediately: true

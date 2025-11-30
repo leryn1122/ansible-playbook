@@ -1,2 +1,1 @@
----
-runc_bin_dir: "{{ runc_bin_dir | default('/usr/local/bin') }}"
+runc_bin_dir: "/usr/local/bin"

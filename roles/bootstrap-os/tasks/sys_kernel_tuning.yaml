@@ -9,7 +9,7 @@
 
 - name: Boostrap | Disable swap
   ansible.builtin.command: >-
-    swapoff -a
+    /sbin/swapoff -a
   become: true
 
 - name: Boostrap | Copy security limits /etc/security/limits.conf
@@ -18,7 +18,7 @@
     dest: /etc/security/limits.conf
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
     backup: yes
   become: true
 
@@ -35,7 +35,7 @@
     dest: /etc/modules-load.d/
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   become: true
 
 - name: Boostrap | Set sysctl
@@ -44,7 +44,7 @@
     dest: /etc/sysctl.d/
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   become: true
 
 - name: Boostrap | Reload sysctl config

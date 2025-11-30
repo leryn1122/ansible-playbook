@@ -1,0 +1,11 @@
+[Unit]
+Description=BuildKit
+Require=buildkit.socket
+After=buildkit.socket
+Documention=https://github.com/moby/buildkit
+ 
+[Service]
+ExecStart=/usr/local/bin/buildkitd --oci-worker=false --containerd-worker=true
+ 
+[Install]
+WantedBy=multi-user.target

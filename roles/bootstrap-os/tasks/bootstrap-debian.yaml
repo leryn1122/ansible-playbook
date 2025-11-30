@@ -29,6 +29,11 @@
     mode: '0600'
   become: true
 
+- name: Boostrap | Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+  become: true
+
 - name: Bootstrap | Install Python3
   ansible.builtin.apt:
     name:
@@ -49,4 +54,12 @@
     name:
       - dbus
     state: present
+  become: true
+
+- name: Bootstrap | Uninstall preinstall software
+  ansible.builtin.apt:
+    name:
+      - ufw
+      - firewalld
+    state: absent
   become: true

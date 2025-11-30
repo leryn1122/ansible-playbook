@@ -1,0 +1,14 @@
+---
+- name: Tools | Install helm
+  ansible.builtin.include_tasks: helm.yaml
+  when:
+    - helm_enabled
+  tags:
+    - helm
+
+- name: Tools | Install buildkit
+  ansible.builtin.include_task: buildkit.yaml
+  when: 
+    - buildkit_enabled
+  tags:
+    - buildkit

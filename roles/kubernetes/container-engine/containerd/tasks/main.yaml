@@ -13,39 +13,41 @@
 - name: Containerd | Copy containerd executable
   ansible.builtin.unarchive:
     src: 'tar/{{ item }}'
-    dest: /usr/local/bin
+    dest: "{{ containerd_bin_dir }}"
     mode: '0755'
+    remote_src: true
     # Containerd tarfile containes path `bin`
     extra_opts:
       - --strip-components=1
   with_items:
-    - containerd-2.1.4-linux-amd64.tar.gz
+    - containerd-{{ containerd_version }}-linux-amd64.tar.gz
 
 - name: Containerd | Copy containerd config file of ECS
-  ansible.builtin.copy:
-    src: etc/containerd/config-ecs.toml
+  ansible.builtin.template:
+    src: etc/containerd/config-{{ machine_resource_type }}.toml
     dest: /etc/containerd/config.toml
     mode: '0644'
     backup: yes
-#   when:
-#     machine_type == 'CPU'
+  when:
+    - machine_resource_type == 'cpu'
 
-# - name: Containerd | Copy containerd config file of GPU ECS
-#   ansible.builtin.copy:
-#     src: etc/containerd/config-gpu.toml
-#     dest: /etc/containerd/config.toml
-#     mode: '0644'
-#     backup: yes
-#   when:
-#     machine_type == 'GPU'
+- name: Containerd | Copy containerd config file of GPU ECS
+  ansible.builtin.template:
+    src: etc/containerd/config-{{ machine_resource_type }}.toml
+    dest: /etc/containerd/config.toml
+    mode: '0644'
+    backup: yes
+  when:
+    - machine_resource_type == 'gpu'
 
 - name: Containerd | Copy nerdctl executable
   ansible.builtin.unarchive:
     src: 'tar/{{ item }}'
-    dest: /usr/local/bin
+    dest: "{{ nerdctl_bin_dir }}"
     mode: '0755'
+    remote_src: true
   with_items:
-    - nerdctl-2.1.4-linux-amd64.tar.gz
+    - nerdctl-{{ nerdctl_version }}-linux-amd64.tar.gz
 
 - name: Containerd | Copy containerd systemd service
   ansible.builtin.copy:

@@ -19,4 +19,4 @@
       - LICENSE
       - README.md
   with_items:
-    - cni-plugins-linux-amd64-v1.8.0.tgz
+    - cni-plugins-linux-amd64-v{{ cni_plugin_version }}.tgz
