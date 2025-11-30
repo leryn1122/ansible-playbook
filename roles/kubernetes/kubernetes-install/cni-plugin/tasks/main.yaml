@@ -15,6 +15,7 @@
     src: "tar/{{ item }}"
     dest: /opt/cni/bin
     mode: '0744'
+    remote_src: true
     exclude:
       - LICENSE
       - README.md
