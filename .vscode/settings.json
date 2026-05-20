@@ -4,5 +4,6 @@
     "**/playbooks/*.(yaml|yml)": "ansible",
     "*.expect": "shellscript",
     "*.service": "systemd-unit-file",
+    "*.service.j2": "systemd-unit-file",
   },
 }
