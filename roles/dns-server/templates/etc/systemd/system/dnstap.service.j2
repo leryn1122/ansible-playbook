@@ -1,0 +1,16 @@
+[Unit]
+Description=DNS Tap
+Documentation=https://github.com/dnstap/golang-dnstap
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStartPost=/bin/sh -c 'echo $MAINPID > /var/run/dnstap.pid'
+ExecStart{{ dnstap_bin_dir}}/dnstap -u {{ dnstap_socket_dir }}/dnstap.sock -w {{ dnstap_log_dir }}/coredns.log -q -a
+ExecStop=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target

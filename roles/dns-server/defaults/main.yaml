@@ -1,0 +1,10 @@
+coredns_bin_dir: /usr/local/bin
+coredns_config_dir: /etc/coredns
+coredns_log_dir: /var/log/coredns
+
+coredns_etcd_bin_dir: /usr/local/bin
+coredns_etcd_data_dir: /var/lib/etcd
+coredns_etcd_version: 3.6.4
+
+dnstap_bin_dir: /usr/local/bin
+dnstap_socket_dir: /var/run/dnstap

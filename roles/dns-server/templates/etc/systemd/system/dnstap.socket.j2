@@ -1,0 +1,11 @@
+[Unit]
+Description=DNS Tap
+Documentation=https://github.com/dnstap/golang-dnstap
+PartOf=dnstap.service
+
+[Socket]
+ListenStream={{ dnstap_socket_dir }}/dnstap.sock
+SocketMode=0660
+
+[Install]
+WantedBy=sockets.target

@@ -1,0 +1,13 @@
+{{ coredns_log_dir }}/coredns.log {
+  daily
+  missingok
+  rotate 4
+  size 10M
+  compress
+  delaycompress
+  notifempty
+  sharedscripts
+  postrotate
+    /bin/systemctl kill -s TERM dnstap.service
+  endscript
+}

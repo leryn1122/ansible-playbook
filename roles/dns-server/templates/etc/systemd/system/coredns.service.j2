@@ -1,0 +1,15 @@
+[Unit]
+Description=CoreDNS
+Documentation=https://github.com/coredns/coredns
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart={{ coredns_bin_dir }}/coredns -conf {{ coredns_conf_dir }}/Corefile
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

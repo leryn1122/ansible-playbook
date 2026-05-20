@@ -1,0 +1,28 @@
+[Unit]
+Description=Etcd server
+Documentation=https://etcd.io/docs/v{{ coredns_etcd_version }}/
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=notify
+Environment="ETCD_IMAGE_TAG=v{{ coredns_etcd_version }}"
+Environment="ETCD_DATA_DIR={{ coredns_etcd_data_dir }}"
+Environment="ETCD_OPTS=--name coredns \
+  --listen-client-urls http://0.0.0.0:2379 \
+  --advertise-client-urls http://localhost:2379 \
+  --listen-peer-urls http://0.0.0.0:2380 \
+  --initial-advertise-peer-urls http://localhost:2380 \
+  --initial-cluster coredns=http://localhost:2380 \
+  --initial-cluster-token mytoken \
+  --initial-cluster-state new \
+  --data-dir {{ coredns_etcd_data_dir }} \
+  --auto-compaction-retention 1 "
+ExecStart={{ coredns_etcd_bin_dir }}/etcd
+ExecStop=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

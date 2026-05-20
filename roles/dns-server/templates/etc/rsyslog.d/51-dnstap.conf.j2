@@ -1,0 +1,24 @@
+#Load imfile module
+$ModLoad imfile
+
+#Monitor coredns log file path
+$InputFileName {{ coredns_log_dir }}/coredns.log
+
+#Monitor coredns log file format
+$InputFileTag CoreDNS
+
+#Log level
+$InputFileSeverity info
+
+#Define state file path for recored log file offset
+$InputFileStateFile /var/lib/rsyslog/dnstap.state
+
+#Check log file interval
+$InputFileInterval 2
+
+#Activate current configuration group
+$InputRunFileMonitor
+
+#@Use UDP Protocol
+:syslogtag, isequal, "CoreDNS" @192.168.0.2:514
+& stop

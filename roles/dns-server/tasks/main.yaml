@@ -1,0 +1,126 @@
+---
+- name: DNS Server | Create coredns directory
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+    recurse: true
+  become: true
+  with_items:
+    - "{{ coredns_conf_dir }}"
+    - "{{ coredns_data_dir }}"
+    - "{{ coredns_log_dir }}"
+    - "{{ coredns_etcd_bin_dir }}"
+    - "{{ coredns_etcd_data_dir }}"
+    - "{{ dnstap_bin_dir }}"
+    - "{{ dnstap_log_dir }}"
+
+- name: DNS Server | Install etcd
+  ansible.builtin.unarchive:
+    src: "tar/etcd-v{{ coredns_etcd_version }}-linux-amd64.tar.gz"
+    dest: "{{ coredns_etcd_bin_dir }}"
+    user: root
+    group: root
+    mode: "0755"
+    extra_opts:
+      - --strip-components=1
+    exclude:
+      - "*Documentation*"
+      - "*.drawio"
+      - "*.png"
+      - "*.md"
+
+- name: DNS Server | Copy etcd server service file
+  ansible.builtin.template:
+    src: etc/systemd/system/etcd-server.service.j2
+    dest: /etc/systemd/system/etcd-server.service
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: DNS Server | Start etcd server service
+  ansible.builtin.service:
+    name: etcd-server
+    state: started
+    enabled: true
+    daemon_reload: true
+
+- name: DNS Server | Install dnstap
+  ansible.builtin.unarchive:
+    src: "tar/dnstap-{{ dnstap_version }}-linux-amd64.tar.gz"
+    dest: "{{ dnstap_bin_dir }}"
+    user: root
+    group: root
+    mode: "0755"
+
+- name: DNS Server | Copy dnstap service file
+  ansible.builtin.template:
+    src: etc/systemd/system/dnstap.service.j2
+    dest: /etc/systemd/system/dnstap.service
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: DNS Server | Copy dnstap config file
+  ansible.builtin.template:
+    src: etc/dnstap/dnstap.conf.j2
+    dest: "{{ dnstap_conf_dir }}/dnstap.conf"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: DNS Server | Copy dnstap logrotate config file
+  ansible.builtin.template:
+    src: etc/logrotate.d/51-dnstap.conf.j2
+    dest: /etc/logrotate.d/51-dnstap.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: DNS Server | Start dnstap service
+  ansible.builtin.service:
+    name: dnstap
+    state: started
+    enabled: true
+    daemon_reload: true
+
+- name: DNS Server | Install coredns
+  ansible.builtin.unarchive:
+    src: "tar/coredns-{{ coredns_version }}-linux-amd64.tar.gz"
+    dest: "{{ coredns_bin_dir }}"
+    user: root
+    group: root
+    mode: "0755"
+
+- name: DNS Server | Copy coredns config file
+  ansible.builtin.template:
+    src: etc/coredns/Corefile.j2
+    dest: "{{ coredns_conf_dir }}/Corefile"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: DNS Server | Copy coredns service file
+  ansible.builtin.template:
+    src: etc/systemd/system/coredns.service.j2
+    dest: /etc/systemd/system/coredns.service
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: DNS Server | Stop preinstalled systemd-resolved service
+  ansible.builtin.service:
+    name: systemd-resolved
+    state: stopped
+    enabled: false
+  failed_when: false
+  become: true
+
+- name: DNS Server | Start coredns service
+  ansible.builtin.service:
+    name: coredns
+    state: started
+    enabled: true
+    daemon_reload: true
