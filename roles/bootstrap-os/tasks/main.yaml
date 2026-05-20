@@ -40,7 +40,21 @@
 - name: Bootstrap | Set kernel tuning
   ansible.builtin.include_tasks: ./sys_kernel_tuning.yaml 
 
+- name: Bootstrap | Install GPU driver
+  ansible.builtin.include_tasks: ./gpu-driver.yaml
+  when:
+    - machine_type | default('cpu') == 'gpu'
+
 - name: Bootstrap | Set NTP service
   ansible.builtin.include_tasks: ./ntp.yaml
   when:
     - ntp_enabled
+
+- name: Bootstrap | Create workspace directory
+  ansible.builtin.file:
+    path: "{{ workspace_dir }}"
+    state: directory
+    mode: "0755"
+    owner: "{{ ansible_ssh_user | default('ops') }}"
+    group: "{{ ansible_ssh_user | default('ops') }}"
+  become: true

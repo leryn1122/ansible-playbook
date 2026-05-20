@@ -16,7 +16,7 @@
     dest: /etc/apt/sources.list
     owner: root
     group: root
-    mode: '0600'
+    mode: "0600"
     backup: true
   become: true
 
@@ -26,7 +26,7 @@
     dest: /etc/apt/apt.conf.d/
     owner: root
     group: root
-    mode: '0600'
+    mode: "0600"
   become: true
 
 - name: Boostrap | Update apt cache
@@ -55,6 +55,17 @@
       - dbus
     state: present
   become: true
+
+- name: Bootstrap | Collect service facts
+  ansible.builtin.service_facts:
+
+- name: Bootstrap | Install preinstall software
+  ansible.builtin.service:
+    name: ufw
+    state: stopped
+    enabled: false
+  become: true
+  when: ansible_facts.services['service']['ufw.service'] | default('not-found') != 'not-found'
 
 - name: Bootstrap | Uninstall preinstall software
   ansible.builtin.apt:

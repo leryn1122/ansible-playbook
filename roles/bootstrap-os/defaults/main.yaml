@@ -6,6 +6,8 @@ sys_kernel_modprobes:
   - nf_conntrack
   - br_netfilter
 
+workspace_dir: /opt/workspace
+
 ntp_enabled: true
 ntp_package: chrony
 ntp_timezone: Asia/Shanghai

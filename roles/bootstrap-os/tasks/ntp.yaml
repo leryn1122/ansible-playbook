@@ -51,7 +51,7 @@
   when:
     - ntp_force_sync_immediately
 
-- name: NTP | Starte NTP service
+- name: NTP | Start NTP service
   ansible.builtin.service:
     name: "{{ ntp_service_name }}"
     state: started

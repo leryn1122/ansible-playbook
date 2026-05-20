@@ -1,0 +1,52 @@
+---
+- name: GPU Driver | Blacklist Nouveau driver
+  ansible.builtin.copy:
+    src: etc/modprobe.d/blacklist-nouveau.conf
+    dest: /etc/modprobe.d/blacklist-nouveau.conf
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: GPU Driver | Collect service facts
+  ansible.builtin.service_facts:
+
+- name: GPU Driver | Disable lightdm service
+  ansible.builtin.service:
+    name: lightdm
+    state: stopped
+    enabled: false
+  become: true
+  when: ansible_facts.services['service']['lightdm.service'] | default('not-found') != 'not-found'
+
+- name: GPU Driver | Set multi-user.target as default target
+  ansible.builtin.command: >-
+    systemctl set-default multi-user.target
+  become: true
+
+- name: GPU Driver | Set GPU driver persistent
+  ansible.builtin.command: >-
+    nvidia-smi -pm 1
+    # nvidia-smi -mig 0
+
+- name: GPU Driver | Copy rc-local service file
+  ansible.builtin.copy:
+    src: etc/systemd/system/rc-local.service
+    dest: /etc/systemd/system/rc-local.service
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: GPU Driver | Copy rc-local script
+  ansible.builtin.copy:
+    src: etc/rc.local
+    dest: /etc/rc.local
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: GPU Driver | Enable rc-local service
+  ansible.builtin.service:
+    name: rc-local.service
+    state: started
+    enabled: true
+  become: true

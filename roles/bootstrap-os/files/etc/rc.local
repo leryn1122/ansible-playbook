@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+nvidia-smi -pm 1
+
+exit 0
