@@ -1,5 +1,8 @@
 {
   "files.associations": {
     "**/tasks/*.(yaml|yml)": "ansible",
+    "**/playbooks/*.(yaml|yml)": "ansible",
+    "*.expect": "shellscript",
+    "*.service": "systemd-unit-file",
   },
 }
